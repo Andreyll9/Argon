@@ -2,17 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>platform-application</key>
-    <true/>
-    <key>com.apple.private.security.no-container</key>
-    <true/>
-    <key>com.apple.developer.networking.networkextension</key>
+    <!-- Разрешенный Apple API для персонального VPN на бесплатном аккаунте -->
+    <key>com.apple.developer.networking.vpn.api</key>
     <array>
-        <string>packet-tunnel-provider</string>
-    </array>
-    <key>com.apple.security.application-groups</key>
-    <array>
-        <string>group.com.argon.vpn</string>
+        <string>allow-vpn</string>
     </array>
 </dict>
 </plist>
