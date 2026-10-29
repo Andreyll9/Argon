@@ -1,4 +1,4 @@
-name: Build Argon Lite IPA
+name: Build Argon Pro IPA
 
 on:
   workflow_dispatch:
@@ -11,10 +11,16 @@ jobs:
       - name: Скачивание файлов проекта
         uses: actions/checkout@v4
 
-      - name: Установка XcodeGen
-        run: brew install xcodegen
+      - name: Установка XcodeGen и ldid
+        run: brew install xcodegen ldid
 
-      - name: Генерация проекта
+      - name: Автоматическое скачивание и распаковка ядра libbox (sing-box)
+        run: |
+          mkdir -p Frameworks
+          curl -L -o libbox.zip https://github.com/SagerNet/sing-box/releases/latest/download/Libbox.xcframework.zip
+          unzip -q libbox.zip -d Frameworks/
+
+      - name: Генерация проекта Xcode
         run: xcodegen generate
 
       - name: Сборка приложения
@@ -33,10 +39,10 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r "build/Build/Products/Release-iphoneos/Argon.app" Payload/
-          zip -r Argon-Free.ipa Payload
+          zip -r Argon-Pro.ipa Payload
 
       - name: Выгрузка готового файла
         uses: actions/upload-artifact@v4
         with:
-          name: Argon-Free-IPA
-          path: Argon-Free.ipa
+          name: Argon-Pro-IPA
+          path: Argon-Pro.ipa
