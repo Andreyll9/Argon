@@ -17,8 +17,7 @@ jobs:
       - name: Скачивание и распаковка ядра libbox (sing-box)
         run: |
           mkdir -p Frameworks
-          # Используем стабильную прямую ссылку на последний релиз Libbox
-          curl -L -o libbox.zip https://github.com/SagerNet/sing-box/releases/download/v1.11.0/Libbox.xcframework.zip || curl -L -o libbox.zip https://github.com/SagerNet/sing-box/releases/latest/download/Libbox.xcframework.zip
+          curl -L -o libbox.zip "https://github.com/EbrahimTahernejad/sing-box-lib/releases/download/1.11.11/Libbox.xcframework.zip"
           unzip -q libbox.zip -d Frameworks/
 
       - name: Генерация проекта Xcode
