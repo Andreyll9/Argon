@@ -1,4 +1,4 @@
-name: Build Argon IPA
+name: Build Argon Lite IPA
 
 on:
   workflow_dispatch:
@@ -11,14 +11,11 @@ jobs:
       - name: Скачивание файлов проекта
         uses: actions/checkout@v4
 
-      - name: Установка XcodeGen и ldid
-        run: brew install xcodegen ldid
+      - name: Установка XcodeGen
+        run: brew install xcodegen
 
-      - name: Создание проекта Xcode
-        run: |
-          xcodegen generate
-          # Принудительно меняем формат 77 на 56, чтобы любой Xcode открыл проект без ошибок
-          sed -i '' 's/objectVersion = 77;/objectVersion = 56;/g' Argon.xcodeproj/project.pbxproj
+      - name: Генерация проекта
+        run: xcodegen generate
 
       - name: Сборка приложения
         run: |
@@ -32,20 +29,14 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
 
-      - name: Прошивка прав для TrollStore (ldid)
-        run: |
-          APP="build/Build/Products/Release-iphoneos/Argon.app"
-          ldid -SArgon.entitlements "$APP/PlugIns/ArgonTunnel.appex/ArgonTunnel"
-          ldid -SArgon.entitlements "$APP/Argon"
-
       - name: Упаковка в .ipa
         run: |
           mkdir -p Payload
           cp -r "build/Build/Products/Release-iphoneos/Argon.app" Payload/
-          zip -r Argon-TrollStore.ipa Payload
+          zip -r Argon-Free.ipa Payload
 
       - name: Выгрузка готового файла
         uses: actions/upload-artifact@v4
         with:
-          name: Argon-TrollStore-IPA
-          path: Argon-TrollStore.ipa
+          name: Argon-Free-IPA
+          path: Argon-Free.ipa
