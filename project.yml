@@ -1,0 +1,32 @@
+name: Argon
+options:
+  bundleIdPrefix: com.argon
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  Argon:
+    type: application
+    platform: iOS
+    sources:
+      - ArgonApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argon.vpn
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: ArgonApp/Info.plist
+    dependencies:
+      - target: ArgonTunnel
+
+  ArgonTunnel:
+    type: app-extension
+    platform: iOS
+    sources:
+      - ArgonTunnel
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.argon.vpn.tunnel
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: ArgonTunnel/Info.plist
