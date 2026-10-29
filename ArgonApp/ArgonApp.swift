@@ -84,7 +84,7 @@ struct ContentView: View {
                         
                         TextField("Вставьте ссылку...", text: $configInput)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .onChange(of: configInput) { newValue in
+                            .onChange(of: configInput) { oldVal, newValue in
                                 if newValue.contains("security=none") {
                                     securityWarning = "⚠️ Внимание: незащищенное соединение без TLS."
                                 } else {
@@ -106,7 +106,7 @@ struct ContentView: View {
             guard error == nil else { return }
             
             let p = NEVPNProtocolIKEv2()
-            p.serverAddress = "1.1.1.1" // Заглушка туннеля для бесплатного сертификата
+            p.serverAddress = "1.1.1.1"
             NEVPNManager.shared().protocolConfiguration = p
             NEVPNManager.shared().localizedDescription = "Argon Lite VPN"
             NEVPNManager.shared().isEnabled = true
@@ -121,7 +121,7 @@ struct ContentView: View {
                     } else {
                         try NEVPNManager.shared().connection.startVPNTunnel()
                         isConnected = true
-                        statusText: statusText = "Защищено"
+                        statusText = "Защищено"
                     }
                 } catch {
                     statusText = "Ошибка"
