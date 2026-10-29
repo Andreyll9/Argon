@@ -17,6 +17,7 @@ struct ContentView: View {
     @State private var configInput = ""
     @State private var statusText = "Отключено"
     @State private var securityWarning = ""
+    @State private var activeProtocol = "Не выбран"
 
     var body: some View {
         ZStack {
@@ -25,7 +26,7 @@ struct ContentView: View {
             VStack(spacing: 24) {
                 // Шапка
                 HStack {
-                    Text("ARGON LITE")
+                    Text("ARGON PRO")
                         .font(.system(size: 26, weight: .black, design: .monospaced))
                         .foregroundColor(.cyan)
                     Spacer()
@@ -43,8 +44,8 @@ struct ContentView: View {
 
                 Spacer()
 
-                // Кнопка включения
-                Button(action: togglePersonalVPN) {
+                // Главная кнопка включения туннеля
+                Button(action: toggleTunnel) {
                     ZStack {
                         Circle()
                             .stroke(isConnected ? Color.green : Color.cyan.opacity(0.4), lineWidth: 4)
@@ -61,6 +62,9 @@ struct ContentView: View {
                             Text(statusText)
                                 .font(.system(size: 13, weight: .semibold, design: .monospaced))
                                 .foregroundColor(.white)
+                            Text(activeProtocol)
+                                .font(.system(size: 10, design: .monospaced))
+                                .foregroundColor(.gray)
                         }
                     }
                 }
@@ -75,21 +79,17 @@ struct ContentView: View {
 
                 Spacer()
 
-                // Расширенный режим (Импорт)
+                // Расширенный режим с парсером конфигов
                 if isAdvancedMode {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Импорт конфигурации (vless://, hy2://, ss://):")
+                        Text("Конфигурация (vless://, hy2://, ss://):")
                             .font(.caption)
                             .foregroundColor(.gray)
                         
-                        TextField("Вставьте ссылку...", text: $configInput)
+                        TextField("Вставьте ссылку вашего сервера...", text: $configInput)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .onChange(of: configInput) { oldVal, newValue in
-                                if newValue.contains("security=none") {
-                                    securityWarning = "⚠️ Внимание: незащищенное соединение без TLS."
-                                } else {
-                                    securityWarning = ""
-                                }
+                                parseConfig(newValue)
                             }
                     }
                     .padding()
@@ -101,14 +101,35 @@ struct ContentView: View {
             .padding(.vertical)
         }
     }
-    func togglePersonalVPN() {
+               // Функция разбора ссылки и определения протокола
+    func parseConfig(_ link: String) {
+        let trimmed = link.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.hasPrefix("vless://") {
+            activeProtocol = "VLESS (Reality/TLS)"
+            securityWarning = ""
+        } else if trimmed.hasPrefix("hy2://") || trimmed.hasPrefix("hysteria2://") {
+            activeProtocol = "Hysteria 2"
+            securityWarning = ""
+        } else if trimmed.hasPrefix("ss://") {
+            activeProtocol = "Shadowsocks"
+            securityWarning = "⚠️ Проверьте шифрование Shadowsocks."
+        } else {
+            activeProtocol = "Неизвестный формат"
+            if !trimmed.isEmpty {
+                securityWarning = "⚠️ Неверный формат ссылки."
+            }
+        }
+    }
+
+    // Запуск системного туннеля
+    func toggleTunnel() {
         NEVPNManager.shared().loadFromPreferences { error in
             guard error == nil else { return }
             
             let p = NEVPNProtocolIKEv2()
-            p.serverAddress = "1.1.1.1"
+            p.serverAddress = configInput.isEmpty ? "1.1.1.1" : "Argon-Custom-Node"
             NEVPNManager.shared().protocolConfiguration = p
-            NEVPNManager.shared().localizedDescription = "Argon Lite VPN"
+            NEVPNManager.shared().localizedDescription = "Argon VPN Client"
             NEVPNManager.shared().isEnabled = true
 
             NEVPNManager.shared().saveToPreferences { error in
