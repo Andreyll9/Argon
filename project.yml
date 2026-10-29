@@ -3,7 +3,7 @@ options:
   bundleIdPrefix: com.argon
   xcodeVersion: "15.0"
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "18.0" # Целевая версия iOS для вашего 13 mini
 
 targets:
   Argon:
@@ -11,23 +11,11 @@ targets:
     platform: iOS
     sources:
       - ArgonApp
+    entitlements:
+      path: Argon.entitlements
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.argon.vpn
+        PRODUCT_BUNDLE_IDENTIFIER: com.argon.vpn.free
         MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1"
         INFOPLIST_FILE: ArgonApp/Info.plist
-    dependencies:
-      - target: ArgonTunnel
-
-  ArgonTunnel:
-    type: app-extension
-    platform: iOS
-    sources:
-      - ArgonTunnel
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.argon.vpn.tunnel
-        MARKETING_VERSION: "1.0.0"
-        CURRENT_PROJECT_VERSION: "1"
-        INFOPLIST_FILE: ArgonTunnel/Info.plist
