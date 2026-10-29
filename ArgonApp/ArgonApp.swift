@@ -1,4 +1,4 @@
-[29.10.2026 17:01] Canary Test: import SwiftUI
+import SwiftUI
 import NetworkExtension
 
 @main
@@ -22,11 +22,9 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            // Чистый черный цвет AMOLED (#000000)
             Color.black.ignoresSafeArea()
 
             VStack(spacing: 22) {
-                // Шапка и переключатель режимов
                 HStack {
                     Text("ARGON")
                         .font(.system(size: 28, weight: .black, design: .monospaced))
@@ -46,7 +44,6 @@ struct ContentView: View {
 
                 Spacer()
 
-                // Главная кнопка включения
                 Button(action: toggleVPN) {
                     ZStack {
                         Circle()
@@ -68,7 +65,6 @@ struct ContentView: View {
                     }
                 }
 
-                // Предупреждение аудита безопасности
                 if !securityWarning.isEmpty {
                     Text(securityWarning)
                         .font(.caption)
@@ -79,7 +75,6 @@ struct ContentView: View {
 
                 Spacer()
 
-                // Панель расширенных настроек
                 if isAdvancedMode {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Импорт (vless://, hy2://, ss://, awg://):")
@@ -94,7 +89,7 @@ struct ContentView: View {
 
                         Toggle("Обход .RU и Госуслуг напрямую", isOn: $bypassRu)
                             .font(.footnote)
-[29.10.2026 17:01] Canary Test: .tint(.cyan)
+                            .tint(.cyan)
                         
                         Toggle("Фрагментация пакетов (Anti-DPI)", isOn: $antiDPI)
                             .font(.footnote)
@@ -109,7 +104,6 @@ struct ContentView: View {
             .padding(.vertical)
         }
     }
-
     func checkSecurity(link: String) {
         if link.contains("security=none") || link.hasPrefix("http://") {
             securityWarning = "⚠️ Внимание: Конфиг не использует TLS/Reality! Возможна утечка трафика."
